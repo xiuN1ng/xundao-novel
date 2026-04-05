@@ -13,7 +13,7 @@ const TextDisplay = (function (EventBus) {
     newlineDelay: 200,    // 遇到换行额外停顿
     maxSpeed: 5,         // 最快速度档（charDelay = 300 / maxSpeed）
     minSpeed: 5,         // 最慢速度档
-    initialSpeedLevel: 3 // 默认速度档 1-5（5最快）
+    initialSpeedLevel: 5 // 默认速度档 1-5（5最快）
   };
 
   /** 打字状态 */
