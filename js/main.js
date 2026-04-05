@@ -70,6 +70,11 @@ const Main = (function (EventBus, GameState, StoryEngine, TextDisplay, ChoiceMen
     EventBus.on('inventory:remove', updateHUD);
     EventBus.on('node:enter', onNodeEnter);
 
+    // dialogue:show → 调用 TextDisplay 显示文字
+    EventBus.on('dialogue:show', function (data) {
+      TextDisplay.show(data.text, data.speaker);
+    });
+
     // 对话完成 → 继续下一个节点
     EventBus.on('text:complete', function (data) {
       const currentNode = StoryEngine.getCurrentNodeId();
