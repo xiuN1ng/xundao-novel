@@ -113,13 +113,15 @@ const TextDisplay = (function (EventBus) {
       speakerEl.style.display = speaker ? 'block' : 'none';
     }
 
-    // 清空文本区 + 触发文字渐入动画
+    // 清空文本区 + 首次显示时触发文字渐入动画
     if (textEl) {
       textEl.textContent = '';
-      // 移除再添加 class 以重触动画
-      textEl.classList.remove('text-reveal-anim');
-      void textEl.offsetWidth; // 强制重排
-      textEl.classList.add('text-reveal-anim');
+      // 仅首次调用时触发动画（打字过程中追加字符不需要重启动画）
+      if (state.currentIndex === 0) {
+        textEl.classList.remove('text-reveal-anim');
+        void textEl.offsetWidth; // 强制重排
+        textEl.classList.add('text-reveal-anim');
+      }
     }
 
     // 说话人名称淡入
