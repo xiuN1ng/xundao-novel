@@ -8,8 +8,8 @@ const Main = (function (EventBus, GameState, StoryEngine, TextDisplay, ChoiceMen
   /** @type {string} 剧情数据路径 */
   const STORY_DATA_PATH = 'data/story.json';
 
-  /** 场景图片基础路径 */
-  const SCENE_BASE = 'assets/scenes/';
+  /** 场景图片基础路径（GitHub Pages 从 dist/ 目录发布） */
+  const SCENE_BASE = 'dist/assets/scenes/';
 
   /** 场景 ID → 文件名 映射（基于可用资源） */
   const SCENE_MAP = {
