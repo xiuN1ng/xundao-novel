@@ -1,0 +1,162 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "寻道·文字冒险游戏 DSL 剧情格式规范",
+  "version": "1.0.0",
+  "description": "寻道·文字冒险游戏的剧情数据格式规范，定义6种核心节点类型及属性系统。",
+  "node_types": {
+    "narrate": {
+      "description": "叙述节点 — 描述场景、描写环境、推进情节，不涉及对话和选择",
+      "fields": {
+        "id": { "type": "string", "required": true, "description": "节点唯一标识符" },
+        "type": { "const": "narrate", "required": true },
+        "text": { "type": "string", "required": true, "description": "叙述文本内容，支持换行" },
+        "scene": { "type": "string", "description": "场景名称，如：青云镇后山、青岚山断崖" },
+        "background": { "type": "string", "description": "背景图片资源路径或描述" },
+        "music": { "type": "string", "description": "背景音乐资源路径" },
+        "next": { "type": "string", "description": "下一节点ID，若为空则表示章节结束" }
+      }
+    },
+    "dialogue": {
+      "description": "对话节点 — 角色发言，推动对话剧情",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "type": { "const": "dialogue", "required": true },
+        "speaker": { "type": "string", "required": true, "description": "说话者名称，若为旁白则写'旁白'" },
+        "portrait": { "type": "string", "description": "立绘名称（对应资源文件）" },
+        "text": { "type": "string", "required": true, "description": "对话文本" },
+        "emotion": { "type": "string", "enum": ["normal", "sad", "happy", "angry", "shock", "nervous"], "description": "说话者当前情绪状态" },
+        "next": { "type": "string", "required": true, "description": "下一节点ID" }
+      }
+    },
+    "choice": {
+      "description": "选择节点 — 玩家做出影响剧情和属性的选择",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "type": { "const": "choice", "required": true },
+        "prompt": { "type": "string", "required": true, "description": "选择提示语" },
+        "choices": {
+          "type": "array",
+          "required": true,
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "properties": {
+              "text": { "type": "string", "required": true, "description": "选项显示文字" },
+              "effects": {
+                "type": "object",
+                "description": "属性影响效果，如 { 心性: -5, 修为: +10 }",
+                "properties": {
+                  "心性": { "type": "number" },
+                  "修为": { "type": "number" },
+                  "缘": { "type": "number" },
+                  "好感度_云爷爷": { "type": "number" },
+                  "好感度_李狗蛋": { "type": "number" }
+                },
+                "additionalProperties": { "type": "number" }
+              },
+              "requires": {
+                "type": "object",
+                "description": "触发条件，如 { 心性: { gte: 60 } }",
+                "additionalProperties": { "type": "object" }
+              },
+              "next": { "type": "string", "required": true, "description": "选择后跳转的节点ID" }
+            }
+          }
+        }
+      }
+    },
+    "set": {
+      "description": "数值变化节点 — 自动触发属性增减，无需玩家选择",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "type": { "const": "set", "required": true },
+        "field": { "type": "string", "required": true, "description": "属性字段名" },
+        "delta": { "type": "number", "required": true, "description": "变化量，正负均可" },
+        "next": { "type": "string", "required": true, "description": "下一节点ID" }
+      }
+    },
+    "if": {
+      "description": "条件分支节点 — 根据当前属性值决定剧情走向",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "type": { "const": "if", "required": true },
+        "condition": { "type": "string", "required": true, "description": "条件表达式，如 '心性 >= 60'" },
+        "then": { "type": "string", "required": true, "description": "条件满足时跳转的节点ID" },
+        "else": { "type": "string", "required": true, "description": "条件不满足时跳转的节点ID" }
+      }
+    },
+    "jump": {
+      "description": "跳转节点 — 无条件跳转到指定节点，常用于章节衔接",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "type": { "const": "jump", "required": true },
+        "target": { "type": "string", "required": true, "description": "目标节点ID" }
+      }
+    },
+    "end": {
+      "description": "结束节点 — 章节或游戏结束",
+      "fields": {
+        "id": { "type": "string", "required": true },
+        "type": { "const": "end", "required": true },
+        "ending": { "type": "string", "description": "结局标识符，如 'normal', 'good', 'bad'" },
+        "title": { "type": "string", "description": "结局标题" },
+        "summary": { "type": "string", "description": "结局摘要" }
+      }
+    }
+  },
+  "attributes": {
+    "心性": {
+      "description": "角色内心的坚韧与纯粹程度，影响问心阵结果、功法突破成功率",
+      "range": [0, 100],
+      "initial": 50,
+      "affects": ["问心阵结果", "心魔试炼", "功法修炼"]
+    },
+    "修为": {
+      "description": "修仙境界的积累，决定战斗力和功法威力",
+      "range": [0, 9999],
+      "initial": 0,
+      "affects": ["战斗力", "解锁功法", "宗门地位"]
+    },
+    "缘": {
+      "description": "天地机缘的积累，影响稀有事件触发概率和奇遇",
+      "range": [0, 999],
+      "initial": 10,
+      "affects": ["奇遇触发", "物品获得", "NPC相遇"]
+    },
+    "好感度_云爷爷": {
+      "description": "与云爷爷的情感羁绊，影响云爷爷支线剧情和遗物获取",
+      "range": [0, 100],
+      "initial": 50,
+      "affects": ["临终剧情", "玉佩获取", "身世线索"]
+    },
+    "好感度_李狗蛋": {
+      "description": "与李狗蛋的兄弟情谊，影响狗蛋结局和杂役堂支线",
+      "range": [0, 100],
+      "initial": 50,
+      "affects": ["分别剧情", "后期重逢", "双人结局"]
+    }
+  },
+  "chapters": {
+    "ch1": {
+      "title": "第一章·青云少年",
+      "summary": "青云镇砍柴少年云泽，在后山断崖发现云游子传承，得知自己身怀五行灵根，踏上修仙之路的第一步。",
+      "core_events": ["婴儿被弃", "狗蛋相识", "云游子传承", "灵根检测"],
+      "choice_count": 2,
+      "node_count": 11
+    },
+    "ch2": {
+      "title": "第二章·仙缘初显",
+      "summary": "野猪妖复仇，云泽初战妖兽。云爷爷病逝，临终托付玉佩身世之谜。云泽与李狗蛋踏上前往天道宗的路途。",
+      "core_events": ["野猪妖复仇", "云爷爷病逝", "玉佩秘密", "踏上旅途"],
+      "choice_count": 2,
+      "node_count": 10
+    },
+    "ch3": {
+      "title": "第三章·踏上道途",
+      "summary": "问心阵试炼，云泽直面心魔。路遇张小胖与张半仙，首战山匪。抵达天道宗，与李狗蛋分别，拜入青云峰。",
+      "core_events": ["问心阵试炼", "狗蛋分别", "张小胖相识", "入青云峰"],
+      "choice_count": 2,
+      "node_count": 12
+    }
+  }
+}

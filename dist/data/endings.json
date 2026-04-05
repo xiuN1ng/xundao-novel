@@ -1,0 +1,173 @@
+{
+  "meta": {
+    "title": "寻道·文字冒险 - 结局列表",
+    "version": "1.0.0",
+    "total_endings": 5,
+    "description": "5个结局的触发条件说明"
+  },
+  "endings": [
+    {
+      "id": "ending_tiandao_dominate",
+      "title": "天道独尊",
+      "type": "dominant",
+      "description": "你成为新的天道主宰，以绝对的力量守护三界。",
+      "trigger_conditions": [
+        "ch9_choice_final选择了\"取代天道\"",
+        "修为 >= 200",
+        "心性 >= 80"
+      ],
+      "requirements": {
+        "修为": {
+          "gte": 200
+        },
+        "心性": {
+          "gte": 80
+        }
+      },
+      "effects": {
+        "gains": [
+          "成为天道主宰",
+          "三界安宁"
+        ],
+        "sacrifices": [
+          "失去所有羁绊",
+          "成为永恒孤独者"
+        ]
+      },
+      "unlock_hints": "需要足够高的修为和心性，且在终章选择第一项。"
+    },
+    {
+      "id": "ending_dadao_merge",
+      "title": "大道归一",
+      "type": "transcendent",
+      "description": "你选择与道合一，放弃个体意识，成为天道的一部分。",
+      "trigger_conditions": [
+        "ch9_choice_final选择了\"与道合一\"",
+        "心性 < 80"
+      ],
+      "requirements": {
+        "心性": {
+          "lt": 80
+        }
+      },
+      "effects": {
+        "gains": [
+          "永恒存在",
+          "天道守护者"
+        ],
+        "sacrifices": [
+          "失去个体意识",
+          "不再记得任何人"
+        ]
+      },
+      "unlock_hints": "心性不足80时，选择第二项会进入此结局。"
+    },
+    {
+      "id": "ending_transcend",
+      "title": "超脱轮回（完美结局）",
+      "type": "perfect",
+      "description": "你以'遁去的一'打破了天道轮回，开创新的纪元，所有羁绊角色重生相聚。",
+      "trigger_conditions": [
+        "ch9_choice_final选择了\"超脱轮回\"",
+        "修为 >= 150",
+        "缘 >= 50",
+        "心性 >= 90",
+        "accept_daojun = True"
+      ],
+      "requirements": {
+        "修为": {
+          "gte": 150
+        },
+        "缘": {
+          "gte": 50
+        },
+        "心性": {
+          "gte": 90
+        }
+      },
+      "effects": {
+        "gains": [
+          "打破轮回",
+          "羁绊角色全部存活",
+          "新纪元开启"
+        ],
+        "sacrifices": [
+          "失去天道主宰力量"
+        ]
+      },
+      "unlock_hints": "完美结局！需要心性>=90、修为>=150、缘>=50，且接受了道君传承。"
+    },
+    {
+      "id": "ending_taotie_ally",
+      "title": "道君归来",
+      "type": "good",
+      "description": "你与饕餮并肩作战，共同击败天玄子，但天道本源落入你手。",
+      "trigger_conditions": [
+        "修为 >= 200 AND 心性 >= 80",
+        "ch8_choice_identity接受了道君传承",
+        "trust_linjingyu = True"
+      ],
+      "requirements": {
+        "修为": {
+          "gte": 200
+        },
+        "心性": {
+          "gte": 80
+        }
+      },
+      "effects": {
+        "gains": [
+          "击败天玄子",
+          "饕餮认可"
+        ],
+        "sacrifices": [
+          "需要做出艰难选择"
+        ]
+      },
+      "unlock_hints": "需要高修为(>=200)和高心性(>=80)，且信任了林惊羽。"
+    },
+    {
+      "id": "ending_lone_hero",
+      "title": "孤独行道",
+      "type": "neutral",
+      "description": "你独自击败天玄子，但代价惨重，羁绊角色各有归宿。",
+      "trigger_conditions": [
+        "修为 < 200 OR 心性 < 80",
+        "ch9_choice_final选择了第三项",
+        "decline_daojun = True"
+      ],
+      "requirements": {
+        "修为": {
+          "lt": 200
+        }
+      },
+      "effects": {
+        "gains": [
+          "击败天玄子",
+          "天道恢复平衡"
+        ],
+        "sacrifices": [
+          "部分羁绊角色牺牲或遗忘"
+        ]
+      },
+      "unlock_hints": "修为或心性不足时，可能进入此结局。需要重新积累。"
+    }
+  ],
+  "trigger_logic": {
+    "ch9_final_choice": {
+      "ending_tiandao_dominate": "选择了\"取代天道\"，且修为>=200且心性>=80",
+      "ending_dadao_merge": "选择了\"与道合一\"",
+      "ending_transcend": "选择了\"超脱轮回\"，且修为>=150且缘>=50且心性>=90"
+    },
+    "key_flags": {
+      "forgive_tianxuan": "第5章选择原谅天璇真人的关键标志，影响饕餮对话和部分结局",
+      "seek_revenge": "第5章选择复仇的关键标志，影响与厉无心的关系",
+      "trust_linjingyu": "第5章选择信任林惊羽的关键标志，影响道心裂隙事件走向",
+      "accept_daojun": "第8章接受道君传承的关键标志，影响最终结局类型",
+      "decline_daojun": "第8章拒绝道君传承的关键标志",
+      "seek_truth": "第7章选择追寻真相的关键标志",
+      "win_battle": "第6章险胜林惊羽的关键标志",
+      "trust_liwuxin": "第6章选择相信厉无心的关键标志"
+    }
+  }
+}

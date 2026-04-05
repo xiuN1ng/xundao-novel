@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>寻道·文字冒险</title>
+  <meta name="description" content="寻道·文字冒险 - 修仙剧情向H5游戏" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#1a1a2e" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ============================================================
+       游戏容器
+       ============================================================ -->
+  <div id="game-container">
+
+    <!-- 背景图区域 -->
+    <div id="bg-layer"></div>
+
+    <!-- ============================================================
+         HUD（数值显示栏）
+         ============================================================ -->
+    <div id="hud">
+      <div id="hud-top">
+        <!-- 左下角：章节名 -->
+        <span id="hud-chapter">序章</span>
+
+        <!-- 右上角：数值图标 -->
+        <div id="hud-stats">
+          <span id="stat-xinxing" class="hud-stat" data-stat="心性" title="心性">
+            <span class="hud-stat-icon">💠</span>
+            <span class="hud-stat-value" id="stat-xinxing-val">50</span>
+          </span>
+          <span id="stat-xiuwei" class="hud-stat" data-stat="修为" title="修为">
+            <span class="hud-stat-icon">⚔️</span>
+            <span class="hud-stat-value" id="stat-xiuwei-val">0</span>
+          </span>
+          <span id="stat-yuan" class="hud-stat" data-stat="缘" title="缘">
+            <span class="hud-stat-icon">✨</span>
+            <span class="hud-stat-value" id="stat-yuan-val">0</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数值详情面板（点击 HUD 数值弹出） -->
+    <div id="stats-panel">
+      <button id="stats-panel-close">✕</button>
+      <div id="stats-panel-header">角色详情</div>
+
+      <div class="stats-section">
+        <div class="stats-section-title">基础属性</div>
+        <div class="stats-row">
+          <span class="stats-row-name">💠 心性</span>
+          <span class="stats-row-value" id="panel-xinxing">50</span>
+        </div>
+        <div class="stats-row">
+          <span class="stats-row-name">⚔️ 修为</span>
+          <span class="stats-row-value" id="panel-xiuwei">0</span>
+        </div>
+        <div class="stats-row">
+          <span class="stats-row-name">✨ 缘</span>
+          <span class="stats-row-value" id="panel-yuan">0</span>
+        </div>
+      </div>
+
+      <div class="stats-section">
+        <div class="stats-section-title">好感度</div>
+        <div id="panel-relations"></div>
+      </div>
+
+      <div class="stats-section" id="panel-inventory-section" style="display:none">
+        <div class="stats-section-title">道具</div>
+        <div id="panel-inventory"></div>
+      </div>
+
+      <div class="stats-section">
+        <div class="stats-section-title">剧情标记</div>
+        <div id="panel-flags"></div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         文字显示区
+         ============================================================ -->
+    <div id="text-area">
+      <div id="dialogue-box">
+        <div id="hud-speaker"></div>
+        <div id="dialogue-text">正在加载剧情...</div>
+        <div id="click-hint">点击继续 ▾</div>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         选项菜单
+         ============================================================ -->
+    <div id="choice-container">
+      <div id="choice-prompt">请选择：</div>
+      <div id="choice-list">
+        <!-- 选项按钮由 ChoiceMenu.js 动态生成 -->
+      </div>
+    </div>
+
+    <!-- ============================================================
+         游戏结束界面
+         ============================================================ -->
+    <div id="end-screen">
+      <h2 id="end-title">游戏结束</h2>
+      <p id="end-message">感谢游玩</p>
+      <button class="choice-btn" onclick="GameMain.restartGame()">重新开始</button>
+    </div>
+
+    <!-- ============================================================
+         工具栏
+         ============================================================ -->
+    <div id="toolbar">
+      <button class="toolbar-btn" onclick="GameMain.toggleStatsPanel()">📊</button>
+      <div id="speed-control">
+        <span id="speed-label">▶</span>
+        <input type="range" id="speed-slider" min="1" max="5" value="3" />
+      </div>
+      <div id="toolbar-right">
+        <button class="toolbar-btn" onclick="GameMain.toggleMute()" id="mute-btn" title="静音">🔊</button>
+        <button class="toolbar-btn" onclick="GameMain.openSaveUI()">💾</button>
+        <button class="toolbar-btn" onclick="GameMain.openLoadUI()">📂</button>
+        <button class="toolbar-btn" onclick="GameMain.restartGame()">🔄</button>
+      </div>
+    </div>
+
+  </div><!-- /#game-container -->
+
+  <!-- ============================================================
+       脚本加载（注意顺序）
+       ============================================================ -->
+  <script src="js/EventBus.js"></script>
+  <script src="js/GameState.js"></script>
+  <script src="js/StoryEngine.js"></script>
+  <script src="js/TextDisplay.js"></script>
+  <script src="js/ChoiceMenu.js"></script>
+  <script src="js/SaveManager.js"></script>
+  <script src="js/SaveLoadUI.js"></script>
+  <script src="js/AudioManager.js"></script>
+  <!-- TapTap SDK（异步，不阻塞首屏） -->
+  <script src="js/TapTapSDK.js" async></script>
+  <!-- 游戏主入口 -->
+  <script src="js/main.js"></script>
+
+  <!-- ============================================================
+       低端设备兼容检测
+       ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      var isLowEnd = false;
+      var perfLevel = 2; // 2=normal, 1=reduced
+
+      // 检测逻辑
+      try {
+        // 1. CPU 核心数（少于4核视为低端）
+        var cores = navigator.hardwareConcurrency || 2;
+        // 2. 内存（如果 API 不可用，保守估计）
+        var memory = navigator.deviceMemory || undefined;
+        // 3. 是否有requestAnimationFrame节流迹象（通过帧率估算）
+        var isMobile = /Android|iPhone|iPod|iPad/i.test(navigator.userAgent);
+
+        // 判断标准：CPU ≤ 2核 或 (内存 ≤ 2GB AND 是移动设备)
+        if (cores <= 2 || (memory !== undefined && memory <= 2 && isMobile)) {
+          isLowEnd = true;
+          perfLevel = 1;
+        }
+
+        // 如果是 Safari（WebKit），降低动画性能
+        if (/Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent)) {
+          perfLevel = Math.min(perfLevel, 1);
+        }
+      } catch (e) {
+        // 检测失败，保守设为普通模式
+        perfLevel = 2;
+      }
+
+      // 额外：启动时估算实际帧率（取前6帧）
+      var frameCount = 0;
+      var lastTime = performance.now();
+      var frameTimes = [];
+
+      function measureFrame() {
+        var now = performance.now();
+        var delta = now - lastTime;
+        lastTime = now;
+        frameTimes.push(delta);
+        frameCount++;
+        if (frameCount < 6) {
+          requestAnimationFrame(measureFrame);
+        } else {
+          // 平均帧间隔
+          var avg = frameTimes.reduce(function (a, b) { return a + b; }, 0) / frameTimes.length;
+          // 帧间隔 > 25ms 说明帧率 < 40fps，视为低端
+          if (avg > 25) {
+            isLowEnd = true;
+            perfLevel = 1;
+          }
+          applyPerfLevel();
+        }
+      }
+
+      function applyPerfLevel() {
+        var root = document.documentElement;
+        if (isLowEnd) {
+          root.setAttribute('data-perf', 'low');
+          // 减少动画时长
+          root.style.setProperty('--transition', '0.15s ease');
+          root.style.setProperty('--bg-fade-duration', '0.3s');
+          // 关闭背景动画
+          var bg = document.getElementById('bg-layer');
+          if (bg) bg.style.transition = 'opacity 0.3s ease, background-image 0.3s ease';
+          console.log('[Perf] 低端设备模式已启用');
+        } else {
+          root.setAttribute('data-perf', 'normal');
+          root.style.setProperty('--transition', '0.25s ease');
+          root.style.setProperty('--bg-fade-duration', '0.8s');
+          console.log('[Perf] 正常设备模式');
+        }
+      }
+
+      // 立即设置初始模式（背景同步，否则首屏会有视觉跳动）
+      applyPerfLevel();
+
+      // 异步测量帧率后微调
+      if (document.readyState === 'complete') {
+        requestAnimationFrame(measureFrame);
+      } else {
+        window.addEventListener('load', function () {
+          requestAnimationFrame(measureFrame);
+        });
+      }
+
+      // 暴露到全局，供其他模块查询
+      window.isLowEndDevice = isLowEnd;
+      window.getPerfLevel = function () { return perfLevel; };
+    })();
+  </script>
+</body>
+</html>
