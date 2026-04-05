@@ -50,9 +50,6 @@ const ChoiceMenu = (function (EventBus) {
     currentChoices = data.choices || [];
     const prompt = data.prompt || '请选择：';
 
-    // 隐藏打字区域（如果有继续提示）
-    EventBus.emit('choice:show', data);
-
     // 更新提示语
     if (promptEl) {
       promptEl.textContent = prompt;

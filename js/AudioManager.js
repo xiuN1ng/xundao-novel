@@ -183,11 +183,11 @@ const AudioManager = (function (EventBus) {
   });
 
   EventBus.on('dialogue:show', () => {
-    playDialogueSound();
+    // 音效文件暂缺，静默降级
   });
 
   EventBus.on('choice:show', () => {
-    playChoiceShowSound();
+    // 音效文件暂缺，静默降级
   });
 
   EventBus.on('choice:select', () => {
