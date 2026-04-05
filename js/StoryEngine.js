@@ -19,6 +19,9 @@ const StoryEngine = (function (EventBus, GameState) {
   /** @type {string|null} 当前节点 ID */
   let currentNodeId = null;
 
+  /** @type {Object|null} 当前节点（用于 continueGame 恢复 next） */
+  let currentNode = null;
+
   // ============================================================
   // 公开 API
   // ============================================================
@@ -48,6 +51,7 @@ const StoryEngine = (function (EventBus, GameState) {
     }
 
     currentNodeId = nodeId;
+    currentNode = node;
     GameState.visitNode(nodeId);
 
     EventBus.emit('node:enter', { nodeId, node });
@@ -366,8 +370,10 @@ const StoryEngine = (function (EventBus, GameState) {
   // ============================================================
 
   EventBus.on('dialogue:complete', function (data) {
-    if (data.next) {
-      goToNode(data.next);
+    // 从当前节点获取 next（dialogue:show 发送的 data.next 在此处不可用，改为存 currentNode）
+    const next = currentNode && currentNode.next;
+    if (next) {
+      goToNode(next);
     }
   });
 
