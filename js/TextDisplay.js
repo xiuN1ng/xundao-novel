@@ -113,22 +113,18 @@ const TextDisplay = (function (EventBus) {
       speakerEl.style.display = speaker ? 'block' : 'none';
     }
 
-    // 清空文本区 + 首次显示时触发文字渐入动画
+    // 清空文本区 + 直接设置透明度为1（绕过CSS动画）
     if (textEl) {
       textEl.textContent = '';
-      // 仅首次调用时触发动画（打字过程中追加字符不需要重启动画）
-      if (state.currentIndex === 0) {
-        textEl.classList.remove('text-reveal-anim');
-        void textEl.offsetWidth; // 强制重排
-        textEl.classList.add('text-reveal-anim');
-      }
+      // 用内联 style 确保文字立即可见
+      textEl.style.opacity = '1';
+      textEl.style.color = '#e8e0d0';
     }
 
-    // 说话人名称淡入
+    // 说话人名称直接显示
     if (speakerEl) {
-      speakerEl.classList.remove('speaker-anim');
-      void speakerEl.offsetWidth;
-      speakerEl.classList.add('speaker-anim');
+      speakerEl.style.opacity = '1';
+      speakerEl.style.color = '#c9a96e';
     }
 
     // 显示点击提示
