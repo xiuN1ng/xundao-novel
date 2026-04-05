@@ -99,9 +99,12 @@ const AudioManager = (function (EventBus) {
     if (!src || isMuted) return;
 
     try {
-      const audio = new Audio(src);
+      const audio = new Audio();
       audio.volume = vol !== undefined ? vol : volume;
       audio.preload = 'auto';
+      // 检查音频是否存在（404 时静默降级）
+      audio.addEventListener('error', () => { audio.src = ''; }, { once: true });
+      audio.src = src;
       audio.play().catch(() => {});
       // 播放完毕后自动释放（无需手动清理）
       audio.addEventListener('ended', () => {

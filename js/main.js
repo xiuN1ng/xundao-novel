@@ -9,7 +9,7 @@ const Main = (function (EventBus, GameState, StoryEngine, TextDisplay, ChoiceMen
   const STORY_DATA_PATH = 'data/story.json';
 
   /** 场景图片基础路径 */
-  const SCENE_BASE = 'src/assets/scenes/';
+  const SCENE_BASE = 'assets/scenes/';
 
   /** 场景 ID → 文件名 映射（基于可用资源） */
   const SCENE_MAP = {
